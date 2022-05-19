@@ -1,0 +1,21 @@
+{
+  "name": "romain/helpers",
+  "description": "A collection of helpers for PHP",
+  "type": "library",
+  "require": {
+    "php": ">=8.0"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Romain Murat",
+      "email": "romain@internet-evolution.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "IERomain\\": "src/"
+    }
+  },
+  "minimum-stability": "dev"
+}
