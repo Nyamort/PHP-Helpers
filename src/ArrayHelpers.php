@@ -3,7 +3,7 @@ namespace IERomain;
 
 use ArrayAccess;
 
-class Arr
+class ArrayHelpers
 {
     /**
      *  group an array by a field.
@@ -12,7 +12,7 @@ class Arr
      *
      * @return array
      */
-    public static function array_groupBy(array $array, string $key): array
+    public static function groupBy(array $array, string $key): array
     {
         $result = [];
         foreach ($array as $element) {
@@ -28,7 +28,7 @@ class Arr
      *
      * @return array|null
      */
-    public static function array_first(array $array, callable $callback = null): ?array
+    public static function first(array $array, callable $callback = null): ?array
     {
         if (is_null($callback)) {
             return reset($array);
@@ -49,18 +49,12 @@ class Arr
      *
      * @return array
      */
-    public static function array_flatten(array $array): array
+    public static function flatten(array $array): array
     {
         $result = [];
-
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $result = array_merge($result, static::array_flatten($value));
-            } else {
-                $result[$key] = $value;
-            }
-        }
-
+        array_walk_recursive($array, function($a) use (&$result) {
+            $result[] = $a;
+        });
         return $result;
     }
 
@@ -73,7 +67,7 @@ class Arr
      *
      * @return array|mixed|null
      */
-    public static function array_get(array $target, ?string $key, $default = null): mixed
+    public static function get(array $target, ?string $key, $default = null): mixed
     {
         if (!$key) return $target;
 
@@ -89,15 +83,39 @@ class Arr
                     $result[] = $v;
                 }
                 return $result === [] ? $default : $result;
+            }else if(str_starts_with($key,'regex:')){
+                $regex = substr($key,6);
+                $result = [];
+                foreach ($target as $k => $v) {
+                    if(preg_match($regex,$k)){
+                        $result[] = $v;
+                    }
+                }
+                return $result === [] ? $default : $result;
             } else return $default;
         } else {
             if (array_key_exists($key, $target)) {
-                if (self::array_accessible($target[$key])) return self::array_get($target[$key], $keys, $default);
+                if (self::accessible($target[$key])) return self::get($target[$key], $keys);
                 else return $default;
             } else if ($key === '*') {
                 $result = [];
                 foreach ($target as $k => $v) {
-                    if (self::array_accessible($v)) $result = array_merge($result, self::array_get($v, $keys, $default));
+                    if (self::accessible($v)) {
+                        $data = self::get($v, $keys);
+                        if ($data !== $default) $result = array_merge($result, [$data]);
+                    }
+                }
+                return $result === [] ? $default : $result;
+            }else if(str_starts_with($key,'regex:')){
+                $regex = substr($key,6);
+                $result = [];
+                foreach ($target as $k => $v) {
+                    if(preg_match($regex,$k)){
+                        if (self::accessible($v)) {
+                            $data = self::get($v, $keys);
+                            if ($data !== $default) $result = array_merge($result, [$data]);
+                        }
+                    }
                 }
                 return $result === [] ? $default : $result;
             } else return $default;
@@ -110,7 +128,7 @@ class Arr
      *
      * @return bool
      */
-    public static function array_accessible($value): bool
+    public static function accessible($value): bool
     {
         return is_array($value) || $value instanceof ArrayAccess;
     }
@@ -122,7 +140,7 @@ class Arr
      *
      * @return bool
      */
-    public static function array_exists($array, $key): bool
+    public static function exists($array, $key): bool
     {
         if ($array instanceof ArrayAccess) {
             return $array->offsetExists($key);
@@ -137,7 +155,7 @@ class Arr
      *
      * @return array
      */
-    public static function array_collapse(iterable $array): array
+    public static function collapse(iterable $array): array
     {
         $results = [];
         foreach ($array as $values) {

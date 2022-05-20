@@ -17,5 +17,8 @@
       "IERomain\\": "src/"
     }
   },
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
+  "require-dev": {
+    "phpunit/phpunit": "10.0.x-dev"
+  }
 }
