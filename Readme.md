@@ -1,15 +1,16 @@
-# ArrayHelpers
+# PHP-Helpers
 ## Overview
-ArrayHelpers is a collection of helper functions for working with arrays.
+ArrayHelpers is a collection of helper functions.
 ## Usage
-### ArrayHelpers::first
+### ArrayHelpers
+#### first
 Returns the first element of an array.
 ```php
 $array = [1, 2, 3];
 ArrayHelpers::first($array) // ['1']
 ```
 
-### ArrayHelpers::get
+### get
 Get a value from the array using "dot" notation, asterisks and regex.
 ```php
 $array = [
