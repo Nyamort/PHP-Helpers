@@ -71,9 +71,15 @@ class ArrayHelpers
     {
         if (!$key) return $target;
 
-        $keys = explode('.', $key, 2);
-        $key = $keys[0];
-        $keys = $keys[1] ?? NULL;
+        if(str_starts_with($key, 'regex:')){
+             preg_match('/(?<key>^regex:\/.*?(?<!\\\\)\/)(?<keys>.*)/', $key, $matches);
+             $key = $matches['key'];
+             $keys = $matches['keys'] === NULL ? NULL : substr($matches['keys'], 1);
+        }else{
+            $keys = explode('.', $key, 2);
+            $key = $keys[0];
+            $keys = $keys[1] ?? NULL;
+        }
 
         if ($keys === NULL) {
             if (array_key_exists($key, $target)) return $target[$key];
@@ -105,6 +111,7 @@ class ArrayHelpers
                         if ($data !== $default) $result = array_merge($result, [$data]);
                     }
                 }
+                if(count($result) === 1) return $result[0];
                 return $result === [] ? $default : $result;
             }else if(str_starts_with($key,'regex:')){
                 $regex = substr($key,6);
@@ -117,6 +124,7 @@ class ArrayHelpers
                         }
                     }
                 }
+                if(count($result) === 1) return $result[0];
                 return $result === [] ? $default : $result;
             } else return $default;
         }

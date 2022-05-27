@@ -77,5 +77,7 @@ class ArrayTest extends TestCase
         $this->assertEquals('foo', ArrayHelpers::get($array, 'tar.foo.baz'));
         $this->assertEquals($expected1, ArrayHelpers::get($array, '*.foo'));
         $this->assertEquals($expected2, ArrayHelpers::get($array, 'tar.*.qux'));
+        $this->assertEquals('bar', ArrayHelpers::get($array, 'tar.*.foo'));
+        $this->assertEquals($expected2, ArrayHelpers::get($array, 'tar.regex:/ba.*/.qux'));
     }
 }
