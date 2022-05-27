@@ -59,7 +59,7 @@ class ArrayHelpers
     }
 
     /**
-     * Get a value from the array using "dot" notation.
+     * Get a value from the array using "dot" notation with regex and asterisk.
      *
      * @param  array        $target
      * @param  string|null  $key

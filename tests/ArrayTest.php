@@ -80,4 +80,39 @@ class ArrayTest extends TestCase
         $this->assertEquals('bar', ArrayHelpers::get($array, 'tar.*.foo'));
         $this->assertEquals($expected2, ArrayHelpers::get($array, 'tar.regex:/ba.*/.qux'));
     }
+
+    public function testAccessible(){
+        $foo = [];
+        $bar = 'bar';
+        $baz = $this->getMockBuilder(ArrayAccess::class)->getMock();
+
+        $this->assertTrue(ArrayHelpers::accessible($foo));
+        $this->assertFalse(ArrayHelpers::accessible($bar));
+        $this->assertTrue(ArrayHelpers::accessible($baz));
+    }
+
+    public function testExists(){
+        $foo = [
+            'foo' => 'bar',
+            'bar' => 'foo',
+        ];
+
+        $this->assertTrue(ArrayHelpers::exists($foo, 'foo'));
+        $this->assertTrue(ArrayHelpers::exists($foo, 'bar'));
+        $this->assertFalse(ArrayHelpers::exists($foo, 'baz'));
+    }
+
+    public function testCollapse(){
+        $array = [
+            ['foo' => 'bar'],
+            ['bar' => 'foo'],
+        ];
+
+        $expected = [
+            'foo' => 'bar',
+            'bar' => 'foo',
+        ];
+
+        $this->assertEquals($expected, ArrayHelpers::collapse($array));
+    }
 }
